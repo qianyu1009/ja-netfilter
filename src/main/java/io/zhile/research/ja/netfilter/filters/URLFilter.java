@@ -23,15 +23,12 @@ public class URLFilter {
         }
 
         for (FilterRule rule : RULES) {
-            switch (rule.getType()) {   // TODO rewrite
-                case PREFIX:
-                    if (url.toString().startsWith(rule.getContent())) {
-                        System.out.println("=== reject url: " + url.toString());
-                        throw new SocketTimeoutException("connect timed out");
-                    }
-                default:    // TODO support more rule types
-                    return url;
+            if (!rule.test(url.toString())) {
+                continue;
             }
+
+            System.out.println("=== reject url: " + url + ", rule: " + rule);
+            throw new SocketTimeoutException("connect timed out");
         }
 
         return url;

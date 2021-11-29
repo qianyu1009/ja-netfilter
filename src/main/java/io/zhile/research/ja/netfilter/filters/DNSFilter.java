@@ -13,7 +13,7 @@ public class DNSFilter {
 
     static {
         RULES = new ArrayList<>();      // TODO read from config file
-        RULES.add(new FilterRule(RuleType.EQUAL, "zhile.io"));
+        RULES.add(new FilterRule(RuleType.REGEXP, ".*?zhile.io"));
     }
 
     public static String testQuery(String host) throws IOException {
@@ -22,15 +22,12 @@ public class DNSFilter {
         }
 
         for (FilterRule rule : RULES) {
-            switch (rule.getType()) {   // TODO rewrite
-                case EQUAL:
-                    if (host.equals(rule.getContent())) {
-                        System.out.println("=== reject dns query: " + host);
-                        throw new java.net.UnknownHostException();
-                    }
-                default:    // TODO support more rule types
-                    return host;
+            if (!rule.test(host)) {
+                continue;
             }
+
+            System.out.println("=== reject dns query: " + host + ", rule: " + rule);
+            throw new java.net.UnknownHostException();
         }
 
         return host;
@@ -42,15 +39,12 @@ public class DNSFilter {
         }
 
         for (FilterRule rule : RULES) {
-            switch (rule.getType()) {   // TODO rewrite
-                case EQUAL:
-                    if (n.getHostName().equals(rule.getContent())) {
-                        System.out.println("=== reject dns reachable test: " + n.getHostName());
-                        return false;
-                    }
-                default:    // TODO support more rule types
-                    return null;
+            if (!rule.test(n.getHostName())) {
+                continue;
             }
+
+            System.out.println("=== reject dns reachable test: " + n.getHostName() + ", rule: " + rule);
+            return false;
         }
 
         return null;

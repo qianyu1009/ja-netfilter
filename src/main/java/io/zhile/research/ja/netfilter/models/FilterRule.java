@@ -5,11 +5,11 @@ import io.zhile.research.ja.netfilter.enums.RuleType;
 public class FilterRule {
     private RuleType type;
 
-    private String content;
+    private String rule;
 
-    public FilterRule(RuleType type, String content) {
+    public FilterRule(RuleType type, String rule) {
         this.type = type;
-        this.content = content;
+        this.rule = rule;
     }
 
     public RuleType getType() {
@@ -20,11 +20,23 @@ public class FilterRule {
         this.type = type;
     }
 
-    public String getContent() {
-        return content;
+    public String getRule() {
+        return rule;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setRule(String rule) {
+        this.rule = rule;
+    }
+
+    public boolean test(String content) {
+        return type.getRuler().test(this.rule, content);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "type=" + type +
+                ", rule='" + rule + '\'' +
+                '}';
     }
 }

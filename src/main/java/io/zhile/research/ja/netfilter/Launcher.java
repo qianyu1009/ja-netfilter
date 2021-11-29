@@ -20,6 +20,7 @@ public class Launcher {
         }
 
         try {
+            jarURL = new URL("file:/Users/neo/Downloads/ja-netfilter/target/ja-netfilter-jar-with-dependencies.jar");
             inst.appendToBootstrapClassLoaderSearch(new JarFile(jarURL.getPath()));
         } catch (Throwable e) {
             throw new RuntimeException("Can not access ja-netfilter jar file.", e);
