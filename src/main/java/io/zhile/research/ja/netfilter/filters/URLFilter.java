@@ -1,5 +1,6 @@
 package io.zhile.research.ja.netfilter.filters;
 
+import io.zhile.research.ja.netfilter.commons.DebugInfo;
 import io.zhile.research.ja.netfilter.enums.RuleType;
 import io.zhile.research.ja.netfilter.models.FilterRule;
 
@@ -27,7 +28,7 @@ public class URLFilter {
                 continue;
             }
 
-            System.out.println("=== reject url: " + url + ", rule: " + rule);
+            DebugInfo.output("=== reject url: " + url + ", rule: " + rule);
             throw new SocketTimeoutException("connect timed out");
         }
 

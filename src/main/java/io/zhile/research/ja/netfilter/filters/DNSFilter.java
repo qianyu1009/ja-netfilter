@@ -1,5 +1,6 @@
 package io.zhile.research.ja.netfilter.filters;
 
+import io.zhile.research.ja.netfilter.commons.DebugInfo;
 import io.zhile.research.ja.netfilter.enums.RuleType;
 import io.zhile.research.ja.netfilter.models.FilterRule;
 
@@ -26,7 +27,7 @@ public class DNSFilter {
                 continue;
             }
 
-            System.out.println("=== reject dns query: " + host + ", rule: " + rule);
+            DebugInfo.output("=== reject dns query: " + host + ", rule: " + rule);
             throw new java.net.UnknownHostException();
         }
 
@@ -43,7 +44,7 @@ public class DNSFilter {
                 continue;
             }
 
-            System.out.println("=== reject dns reachable test: " + n.getHostName() + ", rule: " + rule);
+            DebugInfo.output("=== reject dns reachable test: " + n.getHostName() + ", rule: " + rule);
             return false;
         }
 

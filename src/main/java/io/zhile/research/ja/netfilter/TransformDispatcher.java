@@ -1,5 +1,6 @@
 package io.zhile.research.ja.netfilter;
 
+import io.zhile.research.ja.netfilter.commons.DebugInfo;
 import io.zhile.research.ja.netfilter.transformers.HttpClientTransformer;
 import io.zhile.research.ja.netfilter.transformers.InetAddressTransformer;
 import io.zhile.research.ja.netfilter.transformers.MyTransformer;
@@ -33,7 +34,7 @@ public class TransformDispatcher implements ClassFileTransformer {
             try {
                 return transformer.transform(className, classFileBuffer);
             } catch (Exception e) {
-                System.out.println("=== Transform class failed: " + e.getMessage());
+                DebugInfo.output("=== Transform class failed: " + e.getMessage());
             }
         } while (false);
 
