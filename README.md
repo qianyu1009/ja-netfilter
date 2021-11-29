@@ -4,6 +4,7 @@
 
 ## Usage
 
+* download from the [releases page](https://github.com/pengzhile/ja-netfilter/releases)
 * add `-javaagent:/absolute/path/to/ja-netfilter.jar` argument (**Change to your actual path**)
     * add as an argument of the `java` command.
       eg: `java -javaagent:/absolute/path/to/ja-netfilter.jar -jar executable_jar_file.jar`
