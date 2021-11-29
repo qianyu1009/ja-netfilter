@@ -1,5 +1,11 @@
 package io.zhile.research.ja.netfilter;
 
+import io.zhile.research.ja.netfilter.commons.ConfigDetector;
+import io.zhile.research.ja.netfilter.commons.ConfigParser;
+import io.zhile.research.ja.netfilter.commons.DebugInfo;
+import io.zhile.research.ja.netfilter.models.FilterConfig;
+
+import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.net.MalformedURLException;
@@ -23,6 +29,19 @@ public class Launcher {
             inst.appendToBootstrapClassLoaderSearch(new JarFile(jarURL.getPath()));
         } catch (Throwable e) {
             throw new RuntimeException("Can not access ja-netfilter jar file.", e);
+        }
+
+        File configFile = ConfigDetector.detect(new File(jarURL.getPath()).getParentFile().getPath(), args);
+        if (null == configFile) {
+            DebugInfo.output("Could not find any configuration files.");
+        } else {
+            DebugInfo.output("Current config file: " + configFile.getPath());
+        }
+
+        try {
+            FilterConfig.setCurrent(new FilterConfig(ConfigParser.parse(configFile)));
+        } catch (Exception e) {
+            DebugInfo.output(e.getMessage());
         }
 
         for (Class<?> c : inst.getAllLoadedClasses()) {

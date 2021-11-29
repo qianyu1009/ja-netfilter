@@ -34,7 +34,7 @@ public class TransformDispatcher implements ClassFileTransformer {
             try {
                 return transformer.transform(className, classFileBuffer);
             } catch (Exception e) {
-                DebugInfo.output("=== Transform class failed: " + e.getMessage());
+                DebugInfo.output("Transform class failed: " + e.getMessage());
             }
         } while (false);
 
