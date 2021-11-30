@@ -1,21 +1,25 @@
-package io.zhile.research.ja.netfilter.filters;
+package io.zhile.research.ja.netfilter.plugins.dns;
 
 import io.zhile.research.ja.netfilter.commons.DebugInfo;
-import io.zhile.research.ja.netfilter.models.FilterConfig;
 import io.zhile.research.ja.netfilter.models.FilterRule;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.List;
 
 public class DNSFilter {
-    private static final String SECTION_NAME = "DNS";
+    private static List<FilterRule> ruleList;
+
+    public static void setRules(List<FilterRule> rules) {
+        ruleList = rules;
+    }
 
     public static String testQuery(String host) throws IOException {
-        if (null == host) {
+        if (null == host || null == ruleList) {
             return null;
         }
 
-        for (FilterRule rule : FilterConfig.getBySection(SECTION_NAME)) {
+        for (FilterRule rule : ruleList) {
             if (!rule.test(host)) {
                 continue;
             }
@@ -28,11 +32,11 @@ public class DNSFilter {
     }
 
     public static Object testReachable(InetAddress n) throws IOException {
-        if (null == n) {
+        if (null == n || null == ruleList) {
             return null;
         }
 
-        for (FilterRule rule : FilterConfig.getBySection(SECTION_NAME)) {
+        for (FilterRule rule : ruleList) {
             if (!rule.test(n.getHostName())) {
                 continue;
             }

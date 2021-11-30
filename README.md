@@ -1,4 +1,4 @@
-# ja-netfilter v1.1.0
+# ja-netfilter v1.1.1
 
 ### A javaagent lib for network filter
 

@@ -1,12 +1,22 @@
-package io.zhile.research.ja.netfilter.transformers;
+package io.zhile.research.ja.netfilter.plugins.dns;
 
+import io.zhile.research.ja.netfilter.models.FilterRule;
+import io.zhile.research.ja.netfilter.plugin.MyTransformer;
 import jdk.internal.org.objectweb.asm.ClassReader;
 import jdk.internal.org.objectweb.asm.ClassWriter;
 import jdk.internal.org.objectweb.asm.tree.*;
 
+import java.util.List;
+
 import static jdk.internal.org.objectweb.asm.Opcodes.*;
 
 public class InetAddressTransformer implements MyTransformer {
+    private final List<FilterRule> rules;
+
+    public InetAddressTransformer(List<FilterRule> rules) {
+        this.rules = rules;
+    }
+
     @Override
     public String getHookClassName() {
         return "java/net/InetAddress";
@@ -14,6 +24,8 @@ public class InetAddressTransformer implements MyTransformer {
 
     @Override
     public byte[] transform(String className, byte[] classBytes, int order) throws Exception {
+        DNSFilter.setRules(rules);
+
         ClassReader reader = new ClassReader(classBytes);
         ClassNode node = new ClassNode(ASM5);
         reader.accept(node, 0);
@@ -22,7 +34,7 @@ public class InetAddressTransformer implements MyTransformer {
             if ("getAllByName".equals(m.name) && "(Ljava/lang/String;Ljava/net/InetAddress;)[Ljava/net/InetAddress;".equals(m.desc)) {
                 InsnList list = new InsnList();
                 list.add(new VarInsnNode(ALOAD, 0));
-                list.add(new MethodInsnNode(INVOKESTATIC, "io/zhile/research/ja/netfilter/filters/DNSFilter", "testQuery", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                list.add(new MethodInsnNode(INVOKESTATIC, "io/zhile/research/ja/netfilter/plugins/dns/DNSFilter", "testQuery", "(Ljava/lang/String;)Ljava/lang/String;", false));
                 list.add(new InsnNode(POP));
 
                 m.instructions.insert(list);
@@ -32,7 +44,7 @@ public class InetAddressTransformer implements MyTransformer {
             if ("isReachable".equals(m.name) && "(Ljava/net/NetworkInterface;II)Z".equals(m.desc)) {
                 InsnList list = new InsnList();
                 list.add(new VarInsnNode(ALOAD, 0));
-                list.add(new MethodInsnNode(INVOKESTATIC, "io/zhile/research/ja/netfilter/filters/DNSFilter", "testReachable", "(Ljava/net/InetAddress;)Ljava/lang/Object;", false));
+                list.add(new MethodInsnNode(INVOKESTATIC, "io/zhile/research/ja/netfilter/plugins/dns/DNSFilter", "testReachable", "(Ljava/net/InetAddress;)Ljava/lang/Object;", false));
                 list.add(new VarInsnNode(ASTORE, 4));
                 list.add(new InsnNode(ACONST_NULL));
                 list.add(new VarInsnNode(ALOAD, 4));

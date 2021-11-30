@@ -19,7 +19,7 @@ public class Launcher {
         URI jarURI;
         try {
             jarURI = getJarURI();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.");
             return;
         }

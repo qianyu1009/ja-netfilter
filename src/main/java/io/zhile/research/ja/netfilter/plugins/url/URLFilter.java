@@ -1,22 +1,26 @@
-package io.zhile.research.ja.netfilter.filters;
+package io.zhile.research.ja.netfilter.plugins.url;
 
 import io.zhile.research.ja.netfilter.commons.DebugInfo;
-import io.zhile.research.ja.netfilter.models.FilterConfig;
 import io.zhile.research.ja.netfilter.models.FilterRule;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.List;
 
 public class URLFilter {
-    private static final String SECTION_NAME = "URL";
+    private static List<FilterRule> ruleList;
+
+    public static void setRules(List<FilterRule> rules) {
+        ruleList = rules;
+    }
 
     public static URL testURL(URL url) throws IOException {
-        if (null == url) {
+        if (null == url || null == ruleList) {
             return null;
         }
 
-        for (FilterRule rule : FilterConfig.getBySection(SECTION_NAME)) {
+        for (FilterRule rule : ruleList) {
             if (!rule.test(url.toString())) {
                 continue;
             }

@@ -1,7 +1,6 @@
 package io.zhile.research.ja.netfilter.plugin;
 
 import io.zhile.research.ja.netfilter.models.FilterRule;
-import io.zhile.research.ja.netfilter.transformers.MyTransformer;
 
 import java.util.List;
 
@@ -11,6 +10,8 @@ public interface PluginEntry {
     }
 
     String getName();
+
+    String getAuthor();
 
     default String getVersion() {
         return "v1.0.0";

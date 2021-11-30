@@ -1,4 +1,4 @@
-package io.zhile.research.ja.netfilter.transformers;
+package io.zhile.research.ja.netfilter.plugin;
 
 public interface MyTransformer {
     String getHookClassName();

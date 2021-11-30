@@ -1,7 +1,7 @@
 package io.zhile.research.ja.netfilter;
 
 import io.zhile.research.ja.netfilter.commons.DebugInfo;
-import io.zhile.research.ja.netfilter.transformers.MyTransformer;
+import io.zhile.research.ja.netfilter.plugin.MyTransformer;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -28,12 +28,20 @@ public class Dispatcher implements ClassFileTransformer {
     }
 
     public void addTransformers(List<MyTransformer> transformers) {
+        if (null == transformers) {
+            return;
+        }
+
         for (MyTransformer transformer : transformers) {
             addTransformer(transformer);
         }
     }
 
     public void addTransformers(MyTransformer[] transformers) {
+        if (null == transformers) {
+            return;
+        }
+
         addTransformers(Arrays.asList(transformers));
     }
 
@@ -54,7 +62,7 @@ public class Dispatcher implements ClassFileTransformer {
                 for (MyTransformer transformer : transformers) {
                     classFileBuffer = transformer.transform(className, classFileBuffer, order++);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 DebugInfo.output("Transform class failed: " + e.getMessage());
             }
         } while (false);

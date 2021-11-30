@@ -21,7 +21,7 @@ public class Initializer {
 
         try {
             FilterConfig.setCurrent(new FilterConfig(ConfigParser.parse(configFile)));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             DebugInfo.output(e.getMessage());
         }
 
