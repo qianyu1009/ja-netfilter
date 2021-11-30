@@ -8,7 +8,12 @@ import static jdk.internal.org.objectweb.asm.Opcodes.*;
 
 public class InetAddressTransformer implements MyTransformer {
     @Override
-    public byte[] transform(String className, byte[] classBytes) throws Exception {
+    public String getHookClassName() {
+        return "java/net/InetAddress";
+    }
+
+    @Override
+    public byte[] transform(String className, byte[] classBytes, int order) throws Exception {
         ClassReader reader = new ClassReader(classBytes);
         ClassNode node = new ClassNode(ASM5);
         reader.accept(node, 0);

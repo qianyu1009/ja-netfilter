@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class URLFilter {
-    public static final String SECTION_NAME = "URL";
+    private static final String SECTION_NAME = "URL";
 
     public static URL testURL(URL url) throws IOException {
         if (null == url) {

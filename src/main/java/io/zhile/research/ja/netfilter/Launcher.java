@@ -1,13 +1,9 @@
 package io.zhile.research.ja.netfilter;
 
-import io.zhile.research.ja.netfilter.commons.ConfigDetector;
-import io.zhile.research.ja.netfilter.commons.ConfigParser;
 import io.zhile.research.ja.netfilter.commons.DebugInfo;
-import io.zhile.research.ja.netfilter.models.FilterConfig;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 import java.net.URI;
 import java.net.URL;
 import java.util.jar.JarFile;
@@ -28,35 +24,16 @@ public class Launcher {
             return;
         }
 
+        File currentFile = new File(jarURI.getPath());
+        File currentDirectory = currentFile.getParentFile();
         try {
-            inst.appendToBootstrapClassLoaderSearch(new JarFile(jarURI.getPath()));
+            inst.appendToBootstrapClassLoaderSearch(new JarFile(currentFile));
         } catch (Throwable e) {
             DebugInfo.output("ERROR: Can not access ja-netfilter jar file.");
             return;
         }
 
-        File configFile = ConfigDetector.detect(new File(jarURI.getPath()).getParentFile().getPath(), args);
-        if (null == configFile) {
-            DebugInfo.output("Could not find any configuration files.");
-        } else {
-            DebugInfo.output("Current config file: " + configFile.getPath());
-        }
-
-        try {
-            FilterConfig.setCurrent(new FilterConfig(ConfigParser.parse(configFile)));
-        } catch (Exception e) {
-            DebugInfo.output(e.getMessage());
-        }
-
-        for (Class<?> c : inst.getAllLoadedClasses()) {
-            try {
-                inst.retransformClasses(c);
-            } catch (UnmodifiableClassException e) {
-                // ok, ok. just ignore
-            }
-        }
-
-        inst.addTransformer(new TransformDispatcher(), true);
+        Initializer.init(args, inst, currentDirectory); // for some custom UrlLoaders
     }
 
     private static void printUsage() {

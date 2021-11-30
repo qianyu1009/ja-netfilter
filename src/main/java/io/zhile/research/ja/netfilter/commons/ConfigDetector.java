@@ -7,6 +7,10 @@ import java.io.File;
 public class ConfigDetector {
     private static final String CONFIG_FILENAME = "janf_config.txt";
 
+    public static File detect(File currentDirectory, String args) {
+        return detect(currentDirectory.getPath(), args);
+    }
+
     public static File detect(String currentDirectory, String args) {
         File configFile = tryFile(args);        // by javaagent argument
 
