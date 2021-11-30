@@ -8,7 +8,7 @@ import io.zhile.research.ja.netfilter.models.FilterConfig;
 import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.jar.JarFile;
 
@@ -20,18 +20,22 @@ public class Launcher {
     public static void premain(String args, Instrumentation inst) {
         printUsage();
 
-        URL jarURL = getJarURL();
-        if (null == jarURL) {
-            throw new RuntimeException("Can not locate ja-netfilter jar file.");
+        URI jarURI;
+        try {
+            jarURI = getJarURI();
+        } catch (Exception e) {
+            DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.");
+            return;
         }
 
         try {
-            inst.appendToBootstrapClassLoaderSearch(new JarFile(jarURL.getPath()));
+            inst.appendToBootstrapClassLoaderSearch(new JarFile(jarURI.getPath()));
         } catch (Throwable e) {
-            throw new RuntimeException("Can not access ja-netfilter jar file.", e);
+            DebugInfo.output("ERROR: Can not access ja-netfilter jar file.");
+            return;
         }
 
-        File configFile = ConfigDetector.detect(new File(jarURL.getPath()).getParentFile().getPath(), args);
+        File configFile = ConfigDetector.detect(new File(jarURI.getPath()).getParentFile().getPath(), args);
         if (null == configFile) {
             DebugInfo.output("Could not find any configuration files.");
         } else {
@@ -68,29 +72,25 @@ public class Launcher {
         System.out.flush();
     }
 
-    private static URL getJarURL() {
+    private static URI getJarURI() throws Exception {
         URL url = Launcher.class.getProtectionDomain().getCodeSource().getLocation();
         if (null != url) {
-            return url;
+            return url.toURI();
         }
 
         String resourcePath = "/442fcf28466515a81d5434931496ffa64611cc8e.txt";
         url = Launcher.class.getResource(resourcePath);
         if (null == url) {
-            return null;
+            throw new Exception("Can not locate resource file.");
         }
 
         String path = url.getPath();
         if (!path.endsWith("!" + resourcePath)) {
-            return null;
+            throw new Exception("Invalid resource path.");
         }
 
         path = path.substring(0, path.length() - resourcePath.length() - 1);
 
-        try {
-            return new URL(path);
-        } catch (MalformedURLException e) {
-            return null;
-        }
+        return new URI(path);
     }
 }
