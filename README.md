@@ -20,7 +20,7 @@
       . `eg: java -Djanf.config="/home/neo/downloads/janf_config.txt"`
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`
       . `eg: -Djanf.config="/home/neo/downloads/janf_config.txt"`
-    * file path in the same dir as the `ja-netfilter.jar`
+    * file path in the same dir as the `ja-netfilter.jar` (**PREFERRED!**)
     * file path in your home directory, named: `.janf_config.txt`. `eg: /home/neo/.janf_config.txt`
     * file path in the subdirectory named `.config` in your home directory. `eg: /home/neo/.config/janf_config.txt`
     * file path in the subdirectory named `.local/etc` in your home
