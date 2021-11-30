@@ -52,7 +52,7 @@ EQUAL,somedomain
 ## Plugin system
 
 * for developer:
-    * view the [scaffold project](!https://github.com/pengzhile/ja-netfilter-sample-plugin) written for the plug-in system
+    * view the [scaffold project](https://github.com/pengzhile/ja-netfilter-sample-plugin) written for the plugin system
     * compile your plugin and publish it
     * just use your imagination~
 
