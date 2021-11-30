@@ -3,7 +3,7 @@ package io.zhile.research.ja.netfilter.commons;
 import io.zhile.research.ja.netfilter.utils.DateUtils;
 
 public class DebugInfo {
-    private static final boolean DEBUG = "1".equals(System.getenv("JANF_DEBUG"));
+    private static final boolean DEBUG = "1".equals(System.getenv("JANF_DEBUG")) || "1".equals(System.getProperty("janf.debug"));
 
     public static void output(String content) { // No logger lib required
         if (!DEBUG) {

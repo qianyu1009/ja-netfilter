@@ -50,3 +50,4 @@ EQUAL,somedomain
 
 * the `ja-netfilter` will **NOT** output debugging information by default
 * add environment variable `JANF_DEBUG=1` and start to enable it
+* or add system property `-Djanf.debug=1` to enable it
