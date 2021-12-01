@@ -27,6 +27,8 @@ public class Initializer {
 
         PluginManager.getInstance().loadPlugins(inst, currentDirectory);
 
+        inst.addTransformer(Dispatcher.getInstance(), true);
+
         for (Class<?> c : inst.getAllLoadedClasses()) {
             try {
                 inst.retransformClasses(c);
@@ -34,7 +36,5 @@ public class Initializer {
                 // ok, ok. just ignore
             }
         }
-
-        inst.addTransformer(Dispatcher.getInstance(), true);
     }
 }
