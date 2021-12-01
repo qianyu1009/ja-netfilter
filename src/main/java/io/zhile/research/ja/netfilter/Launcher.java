@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
+    private static final String VERSION = "v1.1.3";
+
     public static void main(String[] args) {
         printUsage();
     }
@@ -39,6 +41,8 @@ public class Launcher {
     private static void printUsage() {
         String content = "\n  ============================================================================  \n" +
                 "\n" +
+                "    ja-netfilter-" + VERSION +
+                "\n\n" +
                 "    A javaagent lib for network filter :)\n" +
                 "\n" +
                 "    https://github.com/pengzhile/ja-netfilter\n" +

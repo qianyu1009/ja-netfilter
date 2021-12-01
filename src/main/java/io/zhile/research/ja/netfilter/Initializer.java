@@ -8,7 +8,6 @@ import io.zhile.research.ja.netfilter.plugin.PluginManager;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 
 public class Initializer {
     public static void init(String args, Instrumentation inst, File currentDirectory) {
@@ -30,10 +29,15 @@ public class Initializer {
         inst.addTransformer(Dispatcher.getInstance(), true);
 
         for (Class<?> c : inst.getAllLoadedClasses()) {
+            String name = c.getName();
+            if (name.startsWith("java.lang.invoke.LambdaForm$") || '[' == name.charAt(0)) {
+                continue;
+            }
+
             try {
                 inst.retransformClasses(c);
-            } catch (UnmodifiableClassException e) {
-                // ok, ok. just ignore
+            } catch (Throwable e) {
+                DebugInfo.output("Retransform class failed: " + name);
             }
         }
     }
