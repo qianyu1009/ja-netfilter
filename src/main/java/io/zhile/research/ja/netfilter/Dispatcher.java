@@ -45,6 +45,10 @@ public class Dispatcher implements ClassFileTransformer {
         addTransformers(Arrays.asList(transformers));
     }
 
+    public Set<String> getHookClassNames() {
+        return transformerMap.keySet();
+    }
+
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) throws IllegalClassFormatException {
         do {
             if (null == className) {

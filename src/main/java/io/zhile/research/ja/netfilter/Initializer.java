@@ -8,6 +8,7 @@ import io.zhile.research.ja.netfilter.plugin.PluginManager;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
+import java.util.Set;
 
 public class Initializer {
     public static void init(String args, Instrumentation inst, File currentDirectory) {
@@ -28,9 +29,10 @@ public class Initializer {
 
         inst.addTransformer(Dispatcher.getInstance(), true);
 
+        Set<String> classSet = Dispatcher.getInstance().getHookClassNames();
         for (Class<?> c : inst.getAllLoadedClasses()) {
             String name = c.getName();
-            if (name.startsWith("java.lang.invoke.LambdaForm$") || '[' == name.charAt(0)) {
+            if (!classSet.contains(name.replace('/', '.'))) {
                 continue;
             }
 
