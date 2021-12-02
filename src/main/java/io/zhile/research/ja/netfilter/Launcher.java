@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
-    private static final String VERSION = "v1.1.4";
+    private static final String VERSION = "v1.1.5";
 
     public static void main(String[] args) {
         printUsage();
