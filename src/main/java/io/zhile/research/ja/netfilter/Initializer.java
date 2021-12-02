@@ -32,7 +32,7 @@ public class Initializer {
         Set<String> classSet = Dispatcher.getInstance().getHookClassNames();
         for (Class<?> c : inst.getAllLoadedClasses()) {
             String name = c.getName();
-            if (!classSet.contains(name.replace('/', '.'))) {
+            if (!classSet.contains(name.replace('.', '/'))) {
                 continue;
             }
 
