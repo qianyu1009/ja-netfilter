@@ -45,7 +45,10 @@ public class ConfigParser {
                         }
 
                         lastSection = section;
-                        map.put(lastSection, new ArrayList<>());
+                        if (null == map.get(lastSection)) {
+                            // do NOT override existing sections
+                            map.put(lastSection, new ArrayList<>());
+                        }
                         break;
                     case '#':
                     case ';':
