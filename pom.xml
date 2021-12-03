@@ -6,7 +6,7 @@
 
     <groupId>io.zhile.research</groupId>
     <artifactId>ja-netfilter</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,6 +47,7 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
+                            <Built-By>neo</Built-By>
                             <Premain-Class>io.zhile.research.ja.netfilter.Launcher</Premain-Class>
                             <Main-Class>io.zhile.research.ja.netfilter.Launcher</Main-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>

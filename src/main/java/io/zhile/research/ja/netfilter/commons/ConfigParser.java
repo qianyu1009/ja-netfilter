@@ -44,11 +44,7 @@ public class ConfigParser {
                             throw new Exception("Empty section name! Line: " + lineNumber);
                         }
 
-                        lastSection = section;
-                        if (null == map.get(lastSection)) {
-                            // do NOT override existing sections
-                            map.put(lastSection, new ArrayList<>());
-                        }
+                        map.computeIfAbsent(lastSection = section, k -> new ArrayList<>());
                         break;
                     case '#':
                     case ';':

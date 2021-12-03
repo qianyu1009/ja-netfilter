@@ -1,10 +1,10 @@
-# ja-netfilter v1.1.5
+# ja-netfilter v1.1.6
 
 ### A javaagent lib for network filter
 
 ## Usage
 
-* download from the [releases page](https://github.com/pengzhile/ja-netfilter/releases)
+* download from the [releases page](https://github.com/ja-netfilter/ja-netfilter/releases)
 * add `-javaagent:/absolute/path/to/ja-netfilter.jar` argument (**Change to your actual path**)
     * add as an argument of the `java` command. eg: `java -javaagent:/absolute/path/to/ja-netfilter.jar -jar executable_jar_file.jar`
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`.
@@ -36,11 +36,15 @@ EQUAL,https://someurl
 [DNS]
 EQUAL,somedomain
 
-# EQUAL     Use `equals` to compare
-# KEYWORD   Use `contains` to compare
-# PREFIX    Use `startsWith` to compare
-# SUFFIX    Use `endsWith` to compare
-# REGEXP    Use regular expressions to match
+# EQUAL       Use `equals` to compare
+# EQUAL_IC    Use `equals` to compare, ignore case
+# KEYWORD     Use `contains` to compare
+# KEYWORD_IC  Use `contains` to compare, ignore case
+# PREFIX      Use `startsWith` to compare
+# PREFIX_IC   Use `startsWith` to compare, ignore case
+# SUFFIX      Use `endsWith` to compare
+# SUFFIX_IC   Use `endsWith` to compare, ignore case
+# REGEXP      Use regular expressions to match
 ```
 
 ## Debug info
@@ -52,7 +56,7 @@ EQUAL,somedomain
 ## Plugin system
 
 * for developer:
-    * view the [scaffold project](https://github.com/pengzhile/ja-netfilter-sample-plugin) written for the plugin system
+    * view the [scaffold project](https://github.com/ja-netfilter/ja-netfilter-sample-plugin) written for the plugin system
     * compile your plugin and publish it
     * just use your imagination~
 
