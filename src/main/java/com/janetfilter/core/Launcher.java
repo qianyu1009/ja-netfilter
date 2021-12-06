@@ -42,7 +42,7 @@ public class Launcher {
                 "\n" +
                 "    ja-netfilter-" + VERSION +
                 "\n\n" +
-                "    A javaagent lib for network filter :)\n" +
+                "    A javaagent framework :)\n" +
                 "\n" +
                 "    https://github.com/ja-netfilter/ja-netfilter\n" +
                 "\n" +
