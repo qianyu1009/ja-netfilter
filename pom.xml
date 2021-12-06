@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.zhile.research</groupId>
+    <groupId>com.ja-netfilter</groupId>
     <artifactId>ja-netfilter</artifactId>
-    <version>1.1.6</version>
+    <version>1.2.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,8 +48,8 @@
                         </manifest>
                         <manifestEntries>
                             <Built-By>neo</Built-By>
-                            <Premain-Class>io.zhile.research.ja.netfilter.Launcher</Premain-Class>
-                            <Main-Class>io.zhile.research.ja.netfilter.Launcher</Main-Class>
+                            <Premain-Class>com.janetfilter.core.Launcher</Premain-Class>
+                            <Main-Class>com.janetfilter.core.Launcher</Main-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>
