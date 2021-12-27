@@ -1,4 +1,4 @@
-# ja-netfilter v1.2.0
+# ja-netfilter v2.0.0
 
 ### A javaagent framework
 
@@ -10,17 +10,7 @@
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`.
     * **WARNING: DO NOT put some unnecessary whitespace characters!**
 
-* edit your own rule list config file. The `ja-netfilter` will look for it in the following order(find one and stop searching):
-    * passed as args of `-javaagent`. eg: `-javaagent:/absolute/path/to/ja-netfilter.jar=/home/neo/downloads/janf_config.txt`
-    * file path in environment variable: `JANF_CONFIG`
-    * file path in `java` startup property: `janf.config`. `eg: java -Djanf.config="/home/neo/downloads/janf_config.txt"`
-    * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`. `eg: -Djanf.config="/home/neo/downloads/janf_config.txt"`
-    * file path in the same dir as the `ja-netfilter.jar`, no need for additional configuration (<font color=green>**PREFERRED!**</font>)
-    * file path in your home directory, named: `.janf_config.txt`. `eg: /home/neo/.janf_config.txt`
-    * file path in the subdirectory named `.config` in your home directory. `eg: /home/neo/.config/janf_config.txt`
-    * file path in the subdirectory named `.local/etc` in your home directory. `eg: /home/neo/.local/ect/janf_config.txt`
-    * file path in the directory named `/usr/local/etc`. `eg: /usr/local/etc/janf_config.txt`
-    * file path in the directory named `/etc`. eg: `/etc/janf_config.txt`
+* edit your plugin config files: `${lower plugin name}.conf` file in the `conf` dir where `ja-netfilter.jar` is located.
 
 * run your java application and enjoy~
 
@@ -28,8 +18,9 @@
 
 ```
 [ABC]
-# for the specified plugin called "ABC"
+# for the specified section name
 
+# for example
 [URL]
 EQUAL,https://someurl
 
@@ -46,6 +37,7 @@ EQUAL,somedomain
 # SUFFIX_IC   Use `endsWith` to compare, ignore case
 # REGEXP      Use regular expressions to match
 ```
+
 
 ## Debug info
 

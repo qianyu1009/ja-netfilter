@@ -1,32 +1,15 @@
 package com.janetfilter.core;
 
-import com.janetfilter.core.commons.ConfigDetector;
-import com.janetfilter.core.commons.ConfigParser;
 import com.janetfilter.core.commons.DebugInfo;
-import com.janetfilter.core.models.FilterConfig;
 import com.janetfilter.core.plugin.PluginManager;
 
-import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.util.Set;
 
 public class Initializer {
-    public static void init(String args, Instrumentation inst, Environment environment) {
-        File configFile = ConfigDetector.detect(environment.getBaseDir(), args);
-        if (null == configFile) {
-            DebugInfo.output("Could not find any configuration files.");
-        } else {
-            DebugInfo.output("Current config file: " + configFile.getPath());
-        }
-
-        try {
-            FilterConfig.setCurrent(new FilterConfig(ConfigParser.parse(configFile)));
-        } catch (Throwable e) {
-            DebugInfo.output(e.getMessage());
-        }
-
+    public static void init(Instrumentation inst, Environment environment) {
         Dispatcher dispatcher = new Dispatcher();
-        new PluginManager(dispatcher, environment).loadPlugins(inst);
+        new PluginManager(inst, dispatcher, environment).loadPlugins();
 
         inst.addTransformer(dispatcher, true);
 

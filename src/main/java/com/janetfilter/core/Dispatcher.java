@@ -12,7 +12,7 @@ public final class Dispatcher implements ClassFileTransformer {
     private final Set<String> classSet = new TreeSet<>();
     private final Map<String, List<MyTransformer>> transformerMap = new HashMap<>();
 
-    public void addTransformer(MyTransformer transformer) {
+    public synchronized void addTransformer(MyTransformer transformer) {
         String className = transformer.getHookClassName();
         classSet.add(className.replace('/', '.'));
         List<MyTransformer> transformers = transformerMap.computeIfAbsent(className, k -> new ArrayList<>());

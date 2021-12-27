@@ -1,12 +1,11 @@
 package com.janetfilter.core.plugin;
 
 import com.janetfilter.core.Environment;
-import com.janetfilter.core.models.FilterRule;
 
 import java.util.List;
 
 public interface PluginEntry {
-    default void init(Environment environment, List<FilterRule> filterRules) {
+    default void init(Environment environment, PluginConfig config) {
         // get plugin config
     }
 

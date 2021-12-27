@@ -17,7 +17,7 @@ public class ConfigParser {
     public static Map<String, List<FilterRule>> parse(File file) throws Exception {
         Map<String, List<FilterRule>> map = new HashMap<>();
 
-        if (null == file) {
+        if (null == file || !file.exists() || !file.isFile() || !file.canRead()) {
             return map;
         }
 
@@ -86,6 +86,7 @@ public class ConfigParser {
             }
         }
 
+        DebugInfo.output("Config file loaded: " + file);
         return map;
     }
 }

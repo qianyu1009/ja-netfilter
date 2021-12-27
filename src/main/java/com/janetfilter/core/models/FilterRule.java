@@ -55,9 +55,6 @@ public class FilterRule {
 
     @Override
     public String toString() {
-        return "{" +
-                "type=" + type +
-                ", rule='" + rule + '\'' +
-                '}';
+        return "{type=" + type + ", rule=" + rule + "}";
     }
 }

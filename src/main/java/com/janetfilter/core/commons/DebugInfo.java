@@ -16,5 +16,6 @@ public class DebugInfo {
         String caller = traces.length < 2 ? "UNKNOWN" : traces[1].toString();
 
         System.out.printf(template, DateUtils.formatNow(), caller, content);
+        System.out.flush();
     }
 }
