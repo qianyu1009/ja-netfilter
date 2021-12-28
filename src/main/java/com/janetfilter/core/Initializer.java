@@ -23,7 +23,7 @@ public class Initializer {
             try {
                 inst.retransformClasses(c);
             } catch (Throwable e) {
-                DebugInfo.output("Retransform class failed: " + name);
+                DebugInfo.output("Retransform class failed: " + name, e);
             }
         }
     }

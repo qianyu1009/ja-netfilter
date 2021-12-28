@@ -29,6 +29,8 @@ public final class PluginManager {
     }
 
     public void loadPlugins() {
+        long startTime = System.currentTimeMillis();
+
         File pluginsDirectory = environment.getPluginsDir();
         if (!pluginsDirectory.exists() || !pluginsDirectory.isDirectory()) {
             return;
@@ -50,9 +52,9 @@ public final class PluginManager {
                 throw new RuntimeException("Load plugin timeout");
             }
 
-            DebugInfo.output("============ All plugins loaded ============");
+            DebugInfo.output(String.format("============ All plugins loaded, %.2fs elapsed ============", (System.currentTimeMillis() - startTime) / 1000D));
         } catch (Throwable e) {
-            DebugInfo.output("Load plugin failed: " + e.getMessage());
+            DebugInfo.output("Load plugin failed", e);
         }
     }
 
@@ -93,7 +95,7 @@ public final class PluginManager {
 
                 DebugInfo.output("Plugin loaded: {name=" + pluginEntry.getName() + ", version=" + pluginEntry.getVersion() + ", author=" + pluginEntry.getAuthor() + "}");
             } catch (Throwable e) {
-                DebugInfo.output("Parse plugin info failed: " + e.getMessage());
+                DebugInfo.output("Parse plugin info failed", e);
             }
         }
     }

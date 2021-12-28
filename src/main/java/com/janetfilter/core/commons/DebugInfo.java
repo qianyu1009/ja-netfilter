@@ -5,7 +5,11 @@ import com.janetfilter.core.utils.DateUtils;
 public class DebugInfo {
     private static final boolean DEBUG = "1".equals(System.getenv("JANF_DEBUG")) || "1".equals(System.getProperty("janf.debug"));
 
-    public static void output(String content) { // No logger lib required
+    public static void output(String content) {
+        output(content, null);
+    }
+
+    public static void output(String content, Throwable e) { // No logger lib required
         if (!DEBUG) {
             return;
         }
@@ -15,7 +19,15 @@ public class DebugInfo {
         StackTraceElement[] traces = new Throwable().getStackTrace();
         String caller = traces.length < 2 ? "UNKNOWN" : traces[1].toString();
 
-        System.out.printf(template, DateUtils.formatNow(), caller, content);
-        System.out.flush();
+        String outContent = String.format(template, DateUtils.formatNow(), caller, content);
+        if (null == e) {
+            System.out.print(outContent);
+            return;
+        }
+
+        synchronized (DebugInfo.class) {
+            System.out.print(outContent);
+            e.printStackTrace(System.err);
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
-    private static final String VERSION = "v2.0.0";
+    private static final String VERSION = "v2.0.1";
 
     public static void main(String[] args) {
         printUsage();
@@ -22,7 +22,7 @@ public class Launcher {
         try {
             jarURI = getJarURI();
         } catch (Throwable e) {
-            DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.");
+            DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.", e);
             return;
         }
 
@@ -30,7 +30,7 @@ public class Launcher {
         try {
             inst.appendToBootstrapClassLoaderSearch(new JarFile(agentFile));
         } catch (Throwable e) {
-            DebugInfo.output("ERROR: Can not access ja-netfilter jar file.");
+            DebugInfo.output("ERROR: Can not access ja-netfilter jar file.", e);
             return;
         }
 
