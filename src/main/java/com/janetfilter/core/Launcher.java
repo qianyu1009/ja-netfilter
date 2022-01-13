@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
-    private static final String VERSION = "v2.0.1";
+    private static final String VERSION = "v2.1.0";
 
     public static void main(String[] args) {
         printUsage();
@@ -34,7 +34,7 @@ public class Launcher {
             return;
         }
 
-        Initializer.init(inst, new Environment(agentFile)); // for some custom UrlLoaders
+        Initializer.init(inst, new Environment(agentFile, args)); // for some custom UrlLoaders
     }
 
     private static void printUsage() {
@@ -58,7 +58,7 @@ public class Launcher {
             return url.toURI();
         }
 
-        String resourcePath = "/5a1666cf298cd1d4fa64d62d123af55f5f39024f.txt";
+        String resourcePath = "/4cc9c353c626d6510ca855ab6907ed7f64400257.txt";
         url = Launcher.class.getResource(resourcePath);
         if (null == url) {
             throw new Exception("Can not locate resource file.");

@@ -1,5 +1,7 @@
 package com.janetfilter.core;
 
+import com.janetfilter.core.utils.StringUtils;
+
 import java.io.File;
 
 public final class Environment {
@@ -9,10 +11,21 @@ public final class Environment {
     private final File pluginsDir;
 
     public Environment(File agentFile) {
+        this(agentFile, null);
+    }
+
+    public Environment(File agentFile, String app) {
         this.agentFile = agentFile;
         baseDir = agentFile.getParentFile();
-        configDir = new File(baseDir, "config");
-        pluginsDir = new File(baseDir, "plugins");
+
+        if (StringUtils.isEmpty(app)) {
+            configDir = new File(baseDir, "config");
+            pluginsDir = new File(baseDir, "plugins");
+        } else {
+            app = app.toLowerCase();
+            configDir = new File(baseDir, "config-" + app);
+            pluginsDir = new File(baseDir, "plugins-" + app);
+        }
     }
 
     public File getBaseDir() {
@@ -29,5 +42,15 @@ public final class Environment {
 
     public File getPluginsDir() {
         return pluginsDir;
+    }
+
+    @Override
+    public String toString() {
+        return "Environment: {" +
+                "\n\tbaseDir=" + baseDir +
+                ", \n\tagentFile=" + agentFile +
+                ", \n\tconfigDir=" + configDir +
+                ", \n\tpluginsDir=" + pluginsDir +
+                "\n}";
     }
 }

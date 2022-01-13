@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class Initializer {
     public static void init(Instrumentation inst, Environment environment) {
+        DebugInfo.output(environment.toString());
+
         Dispatcher dispatcher = new Dispatcher();
         new PluginManager(inst, dispatcher, environment).loadPlugins();
 
