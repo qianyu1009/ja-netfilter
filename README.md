@@ -12,9 +12,9 @@
 
 * edit your plugin config files: `${lower plugin name}.conf` file in the `conf` dir where `ja-netfilter.jar` is located.
 * the `conf` and `plugins` directory can be specified through **the javaagent args**.
-  * eg: `-javaagent:/path/to/ja-netfilter.jar=appName`, your config and plugins directories will be `conf-appname` and `plugins-appname`.
-  * if no javaagent args, they default to `conf` and `plugins`.
-  * this mechanism will avoid extraneous and bloated `conf` and `plugins`.
+  * eg: `-javaagent:/path/to/ja-netfilter.jar=appName`, your config and plugins directories will be `config-appname` and `plugins-appname`.
+  * if no javaagent args, they default to `config` and `plugins`.
+  * this mechanism will avoid extraneous and bloated `config` and `plugins`.
 
 * run your java application and enjoy~
 
