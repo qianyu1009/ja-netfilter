@@ -14,6 +14,7 @@ public class Initializer {
         new PluginManager(inst, dispatcher, environment).loadPlugins();
 
         inst.addTransformer(dispatcher, true);
+        inst.setNativeMethodPrefix(dispatcher, environment.getNativePrefix());
 
         Set<String> classSet = dispatcher.getHookClassNames();
         for (Class<?> c : inst.getAllLoadedClasses()) {

@@ -11,9 +11,15 @@ import java.util.*;
 public final class Dispatcher implements ClassFileTransformer {
     private final Set<String> classSet = new TreeSet<>();
     private final Map<String, List<MyTransformer>> transformerMap = new HashMap<>();
+    private final List<MyTransformer> globalTransformers = new ArrayList<>();
 
     public synchronized void addTransformer(MyTransformer transformer) {
         String className = transformer.getHookClassName();
+        if (null == className) {
+            globalTransformers.add(transformer);
+            return;
+        }
+
         classSet.add(className.replace('/', '.'));
         List<MyTransformer> transformers = transformerMap.computeIfAbsent(className, k -> new ArrayList<>());
 
@@ -56,6 +62,10 @@ public final class Dispatcher implements ClassFileTransformer {
             int order = 0;
 
             try {
+                for (MyTransformer transformer : globalTransformers) {
+                    classFileBuffer = transformer.transform(className, classFileBuffer, order++);
+                }
+
                 for (MyTransformer transformer : transformers) {
                     classFileBuffer = transformer.transform(className, classFileBuffer, order++);
                 }

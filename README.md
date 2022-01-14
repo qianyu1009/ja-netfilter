@@ -1,4 +1,4 @@
-# ja-netfilter v2.1.0
+# ja-netfilter v2.1.1
 
 ### A javaagent framework
 
@@ -10,8 +10,8 @@
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`.
     * **WARNING: DO NOT put some unnecessary whitespace characters!**
 
-* edit your plugin config files: `${lower plugin name}.conf` file in the `conf` dir where `ja-netfilter.jar` is located.
-* the `conf` and `plugins` directory can be specified through **the javaagent args**.
+* edit your plugin config files: `${lower plugin name}.conf` file in the `config` dir where `ja-netfilter.jar` is located.
+* the `config` and `plugins` directory can be specified through **the javaagent args**.
   * eg: `-javaagent:/path/to/ja-netfilter.jar=appName`, your config and plugins directories will be `config-appname` and `plugins-appname`.
   * if no javaagent args, they default to `config` and `plugins`.
   * this mechanism will avoid extraneous and bloated `config` and `plugins`.

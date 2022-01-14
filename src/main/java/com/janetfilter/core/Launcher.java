@@ -9,17 +9,25 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
-    private static final String VERSION = "v2.1.0";
+    private static final String VERSION = "v2.1.1";
+
+    private static boolean loaded = false;
 
     public static void main(String[] args) {
         printUsage();
     }
 
     public static void premain(String args, Instrumentation inst) {
+        if (loaded) {
+            DebugInfo.output("WARN: You have multiple `ja-netfilter` as -javaagent.");
+            return;
+        }
+
         printUsage();
 
         URI jarURI;
         try {
+            loaded = true;
             jarURI = getJarURI();
         } catch (Throwable e) {
             DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.", e);
