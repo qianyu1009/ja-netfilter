@@ -80,13 +80,13 @@ public class ConfigParser {
                         }
 
                         map.get(lastSection).add(rule);
-                        DebugInfo.output("Add section: " + lastSection + ", rule: " + rule);
+                        DebugInfo.debug("Add section: " + lastSection + ", rule: " + rule);
                         break;
                 }
             }
         }
 
-        DebugInfo.output("Config file loaded: " + file);
+        DebugInfo.debug("Config file loaded: " + file);
         return map;
     }
 }

@@ -14,8 +14,16 @@ public class DateUtils {
         return FULL_DF.format(date);
     }
 
+    public static String formatDateTime() {
+        return FULL_DF.format(new Date());
+    }
+
     public static String formatDate(Date date) {
         return DATE_DF.format(date);
+    }
+
+    public static String formatDate() {
+        return formatDate(new Date());
     }
 
     public static String formatTime(Date date) {
@@ -32,9 +40,5 @@ public class DateUtils {
 
     public static Date parseDateTime(String dateTimeStr) throws ParseException {
         return FULL_DF.parse(dateTimeStr);
-    }
-
-    public static String formatNow() {
-        return formatDateTime(new Date());
     }
 }

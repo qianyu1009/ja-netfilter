@@ -70,7 +70,7 @@ public final class Dispatcher implements ClassFileTransformer {
                     classFileBuffer = transformer.transform(className, classFileBuffer, order++);
                 }
             } catch (Throwable e) {
-                DebugInfo.output("Transform class failed: " + className, e);
+                DebugInfo.error("Transform class failed: " + className, e);
             }
         } while (false);
 

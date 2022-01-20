@@ -1,25 +1,49 @@
 package com.janetfilter.core;
 
+import com.janetfilter.core.attach.VMLauncher;
+import com.janetfilter.core.attach.VMSelector;
 import com.janetfilter.core.commons.DebugInfo;
+import com.janetfilter.core.utils.WhereIsUtils;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.net.URI;
-import java.net.URL;
 import java.util.jar.JarFile;
 
 public class Launcher {
-    private static final String VERSION = "v2.1.1";
+    public static final String ATTACH_ARG = "--attach";
+    public static final String VERSION = "v2.2.0";
 
     private static boolean loaded = false;
 
     public static void main(String[] args) {
+        URI jarURI;
+        try {
+            jarURI = WhereIsUtils.getJarURI();
+        } catch (Throwable e) {
+            DebugInfo.error("Can not locate `ja-netfilter` jar file.", e);
+            return;
+        }
+
+        String jarPath = jarURI.getPath();
+        if (args.length > 1 && args[0].equals(ATTACH_ARG)) {
+            VMLauncher.attachVM(jarPath, args[1], args.length > 2 ? args[2] : null);
+            return;
+        }
+
         printUsage();
+
+        try {
+            new VMSelector(new File(jarPath)).select();
+        } catch (Throwable e) {
+            System.err.println("  ERROR: Select virtual machine failed.");
+            e.printStackTrace(System.err);
+        }
     }
 
     public static void premain(String args, Instrumentation inst) {
         if (loaded) {
-            DebugInfo.output("WARN: You have multiple `ja-netfilter` as -javaagent.");
+            DebugInfo.warn("You have multiple `ja-netfilter` as javaagent.");
             return;
         }
 
@@ -28,9 +52,9 @@ public class Launcher {
         URI jarURI;
         try {
             loaded = true;
-            jarURI = getJarURI();
+            jarURI = WhereIsUtils.getJarURI();
         } catch (Throwable e) {
-            DebugInfo.output("ERROR: Can not locate ja-netfilter jar file.", e);
+            DebugInfo.error("Can not locate `ja-netfilter` jar file.", e);
             return;
         }
 
@@ -38,11 +62,15 @@ public class Launcher {
         try {
             inst.appendToBootstrapClassLoaderSearch(new JarFile(agentFile));
         } catch (Throwable e) {
-            DebugInfo.output("ERROR: Can not access ja-netfilter jar file.", e);
+            DebugInfo.error("Can not access `ja-netfilter` jar file.", e);
             return;
         }
 
         Initializer.init(inst, new Environment(agentFile, args)); // for some custom UrlLoaders
+    }
+
+    public static void agentmain(String args, Instrumentation inst) {
+        premain(args, inst);
     }
 
     private static void printUsage() {
@@ -57,28 +85,5 @@ public class Launcher {
                 "  ============================================================================  \n\n";
 
         System.out.print(content);
-        System.out.flush();
-    }
-
-    private static URI getJarURI() throws Exception {
-        URL url = Launcher.class.getProtectionDomain().getCodeSource().getLocation();
-        if (null != url) {
-            return url.toURI();
-        }
-
-        String resourcePath = "/4cc9c353c626d6510ca855ab6907ed7f64400257.txt";
-        url = Launcher.class.getResource(resourcePath);
-        if (null == url) {
-            throw new Exception("Can not locate resource file.");
-        }
-
-        String path = url.getPath();
-        if (!path.endsWith("!" + resourcePath)) {
-            throw new Exception("Invalid resource path.");
-        }
-
-        path = path.substring(0, path.length() - resourcePath.length() - 1);
-
-        return new URI(path);
     }
 }

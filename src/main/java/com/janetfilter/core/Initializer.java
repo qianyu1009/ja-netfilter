@@ -8,7 +8,8 @@ import java.util.Set;
 
 public class Initializer {
     public static void init(Instrumentation inst, Environment environment) {
-        DebugInfo.output(environment.toString());
+        DebugInfo.useFile(environment.getLogsDir());
+        DebugInfo.info(environment.toString());
 
         Dispatcher dispatcher = new Dispatcher();
         new PluginManager(inst, dispatcher, environment).loadPlugins();
@@ -26,7 +27,7 @@ public class Initializer {
             try {
                 inst.retransformClasses(c);
             } catch (Throwable e) {
-                DebugInfo.output("Retransform class failed: " + name, e);
+                DebugInfo.error("Retransform class failed: " + name, e);
             }
         }
     }

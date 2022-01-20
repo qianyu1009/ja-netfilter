@@ -52,9 +52,9 @@ public final class PluginManager {
                 throw new RuntimeException("Load plugin timeout");
             }
 
-            DebugInfo.output(String.format("============ All plugins loaded, %.2fs elapsed ============", (System.currentTimeMillis() - startTime) / 1000D));
+            DebugInfo.debug(String.format("============ All plugins loaded, %.2fs elapsed ============", (System.currentTimeMillis() - startTime) / 1000D));
         } catch (Throwable e) {
-            DebugInfo.output("Load plugin failed", e);
+            DebugInfo.error("Load plugin failed", e);
         }
     }
 
@@ -93,9 +93,9 @@ public final class PluginManager {
 
                 dispatcher.addTransformers(pluginEntry.getTransformers());
 
-                DebugInfo.output("Plugin loaded: {name=" + pluginEntry.getName() + ", version=" + pluginEntry.getVersion() + ", author=" + pluginEntry.getAuthor() + "}");
+                DebugInfo.debug("Plugin loaded: {name=" + pluginEntry.getName() + ", version=" + pluginEntry.getVersion() + ", author=" + pluginEntry.getAuthor() + "}");
             } catch (Throwable e) {
-                DebugInfo.output("Parse plugin info failed", e);
+                DebugInfo.error("Parse plugin info failed", e);
             }
         }
     }

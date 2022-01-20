@@ -1,4 +1,4 @@
-# ja-netfilter v2.1.1
+# ja-netfilter v2.2.0
 
 ### A javaagent framework
 
@@ -9,12 +9,13 @@
     * add as an argument of the `java` command. eg: `java -javaagent:/absolute/path/to/ja-netfilter.jar -jar executable_jar_file.jar`
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`.
     * **WARNING: DO NOT put some unnecessary whitespace characters!**
+* or execute `java -jar /path/to/ja-netfilter.jar` to use `attach mode`.
 
 * edit your plugin config files: `${lower plugin name}.conf` file in the `config` dir where `ja-netfilter.jar` is located.
-* the `config` and `plugins` directory can be specified through **the javaagent args**.
-  * eg: `-javaagent:/path/to/ja-netfilter.jar=appName`, your config and plugins directories will be `config-appname` and `plugins-appname`.
-  * if no javaagent args, they default to `config` and `plugins`.
-  * this mechanism will avoid extraneous and bloated `config` and `plugins`.
+* the `config`, `logs` and `plugins` directories can be specified through **the javaagent args**.
+  * eg: `-javaagent:/path/to/ja-netfilter.jar=appName`, your config, logs and plugins directories will be `config-appname`, `logs-appname` and `plugins-appname`.
+  * if no javaagent args, they default to `config`, `logs` and `plugins`.
+  * this mechanism will avoid extraneous and bloated `config`, `logs` and `plugins`.
 
 * run your java application and enjoy~
 
@@ -46,8 +47,9 @@ EQUAL,somedomain
 ## Debug info
 
 * the `ja-netfilter` will **NOT** output debugging information by default
-* add environment variable `JANF_DEBUG=1` and start to enable it
-* or add system property `-Djanf.debug=1` to enable it
+* add environment variable `JANF_DEBUG=1` (log level) and start to enable it
+* or add system property `-Djanf.debug=1` (log level) to enable it
+* log level: `NONE=0`, `DEBUG=1`, `INFO=2`, `WARN=3`, `ERROR=4`;
 
 ## Plugin system
 
