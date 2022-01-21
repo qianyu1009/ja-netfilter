@@ -6,7 +6,7 @@
 
     <groupId>com.ja-netfilter</groupId>
     <artifactId>ja-netfilter</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 
     <name>ja-netfilter</name>
     <description>A javaagent framework</description>

@@ -7,10 +7,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DebugInfo {
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final String CLASS_NAME = DebugInfo.class.getName();
-    private static final String LOG_TEMPLATE = "[%s] %s %s : %s%n";
+    private static final String LOG_TEMPLATE = "%s %-5s [%s] %s-%d : %s%n";
     private static final Level LOG_LEVEL;
     private static File logFile;
 
@@ -93,26 +96,7 @@ public class DebugInfo {
             return;
         }
 
-        String caller = "UNKNOWN";
-        StackTraceElement[] traces = new Throwable().getStackTrace();
-        for (int i = 1, l = traces.length; i < l; i++) {    // thank RayGicEFL
-            StackTraceElement element = traces[i];
-            if (!CLASS_NAME.equals(element.getClassName())) {
-                caller = element.toString();
-                break;
-            }
-        }
-
-        String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTime(), caller, level, content);
-        if (null == e) {
-            writeContent(outContent);
-            return;
-        }
-
-        synchronized (DebugInfo.class) {
-            writeContent(outContent, System.err);
-            writeException(e);
-        }
+        EXECUTOR.execute(new WriteTask(level, content, e));
     }
 
     private static void writeContent(String content) {
@@ -171,6 +155,49 @@ public class DebugInfo {
             }
 
             return NONE;
+        }
+    }
+
+    private static class WriteTask implements Runnable {
+        private final Level level;
+        private final String content;
+        private final Throwable exception;
+        private final Throwable stackException;
+
+        private final String threadName;
+
+        WriteTask(Level level, String content, Throwable exception) {
+            this.level = level;
+            this.content = content;
+            this.exception = exception;
+            this.stackException = new Throwable();
+            this.threadName = Thread.currentThread().getName();
+        }
+
+        @Override
+        public void run() {
+            int line = 0;
+            String caller = "UNKNOWN";
+            StackTraceElement[] traces = stackException.getStackTrace();
+            for (int i = 1, l = traces.length; i < l; i++) {    // thank RayGicEFL
+                StackTraceElement element = traces[i];
+                if (!CLASS_NAME.equals(element.getClassName())) {
+                    line = element.getLineNumber();
+                    caller = element.getClassName();
+                    break;
+                }
+            }
+
+            String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTimeMicro(), level, threadName, caller, line, content);
+            if (null == exception) {
+                writeContent(outContent);
+                return;
+            }
+
+            synchronized (DebugInfo.class) {
+                writeContent(outContent, System.err);
+                writeException(exception);
+            }
         }
     }
 }

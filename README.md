@@ -1,4 +1,4 @@
-# ja-netfilter v2.2.0
+# ja-netfilter v2.2.1
 
 ### A javaagent framework
 
@@ -49,7 +49,7 @@ EQUAL,somedomain
 * the `ja-netfilter` will **NOT** output debugging information by default
 * add environment variable `JANF_DEBUG=1` (log level) and start to enable it
 * or add system property `-Djanf.debug=1` (log level) to enable it
-* log level: `NONE=0`, `DEBUG=1`, `INFO=2`, `WARN=3`, `ERROR=4`;
+* log level: `NONE=0`, `DEBUG=1`, `INFO=2`, `WARN=3`, `ERROR=4`
 
 ## Plugin system
 

@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class DateUtils {
     public static final DateFormat FULL_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final DateFormat FULL_MICRO_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     public static final DateFormat DATE_DF = new SimpleDateFormat("yyyy-MM-dd");
     public static final DateFormat TIME_DF = new SimpleDateFormat("HH:mm:ss");
 
@@ -15,7 +16,15 @@ public class DateUtils {
     }
 
     public static String formatDateTime() {
-        return FULL_DF.format(new Date());
+        return formatDateTime(new Date());
+    }
+
+    public static String formatDateTimeMicro(Date date) {
+        return FULL_MICRO_DF.format(date);
+    }
+
+    public static String formatDateTimeMicro() {
+        return formatDateTimeMicro(new Date());
     }
 
     public static String formatDate(Date date) {

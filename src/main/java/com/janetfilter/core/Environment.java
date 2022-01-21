@@ -7,6 +7,8 @@ import java.io.File;
 
 public final class Environment {
     private final String pid;
+    private final String version;
+    private final String appName;
     private final File baseDir;
     private final File agentFile;
     private final File configDir;
@@ -23,22 +25,32 @@ public final class Environment {
         baseDir = agentFile.getParentFile();
 
         if (StringUtils.isEmpty(app)) {
+            appName = "";
             configDir = new File(baseDir, "config");
             pluginsDir = new File(baseDir, "plugins");
             logsDir = new File(baseDir, "logs");
         } else {
-            app = app.toLowerCase();
-            configDir = new File(baseDir, "config-" + app);
-            pluginsDir = new File(baseDir, "plugins-" + app);
-            logsDir = new File(baseDir, "logs-" + app);
+            appName = app.toLowerCase();
+            configDir = new File(baseDir, "config-" + appName);
+            pluginsDir = new File(baseDir, "plugins-" + appName);
+            logsDir = new File(baseDir, "logs-" + appName);
         }
 
-        nativePrefix = StringUtils.randomMethodName(15) + "_";
         pid = ProcessUtils.currentId();
+        version = Launcher.VERSION;
+        nativePrefix = StringUtils.randomMethodName(15) + "_";
     }
 
     public String getPid() {
         return pid;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getAppName() {
+        return appName;
     }
 
     public File getBaseDir() {
@@ -69,6 +81,8 @@ public final class Environment {
     public String toString() {
         return "Environment: {" +
                 "\n\tpid = " + pid +
+                ", \n\tversion = " + version +
+                ", \n\tappName = " + appName +
                 ", \n\tbaseDir = " + baseDir +
                 ", \n\tagentFile = " + agentFile +
                 ", \n\tconfigDir = " + configDir +
