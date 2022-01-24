@@ -1,4 +1,4 @@
-# ja-netfilter v2.2.1
+# ja-netfilter v2.2.2
 
 ### A javaagent framework
 
@@ -62,4 +62,5 @@ EQUAL,somedomain
     * download the jar file of the plugin
     * put it in the subdirectory called `plugins` where the ja-netfilter.jar file is located
     * enjoy the new capabilities brought by the plugin
+    * if the file suffix is `.disabled.jar`, the plugin will be disabled
    

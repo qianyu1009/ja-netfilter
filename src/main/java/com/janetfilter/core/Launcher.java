@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 
 public class Launcher {
     public static final String ATTACH_ARG = "--attach";
-    public static final String VERSION = "v2.2.1";
+    public static final String VERSION = "v2.2.2";
 
     private static boolean loaded = false;
 

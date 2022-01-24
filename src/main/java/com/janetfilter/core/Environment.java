@@ -15,6 +15,7 @@ public final class Environment {
     private final File pluginsDir;
     private final File logsDir;
     private final String nativePrefix;
+    private final String disabledPluginSuffix;
 
     public Environment(File agentFile) {
         this(agentFile, null);
@@ -39,6 +40,7 @@ public final class Environment {
         pid = ProcessUtils.currentId();
         version = Launcher.VERSION;
         nativePrefix = StringUtils.randomMethodName(15) + "_";
+        disabledPluginSuffix = ".disabled.jar";
     }
 
     public String getPid() {
@@ -77,6 +79,10 @@ public final class Environment {
         return nativePrefix;
     }
 
+    public String getDisabledPluginSuffix() {
+        return disabledPluginSuffix;
+    }
+
     @Override
     public String toString() {
         return "Environment: {" +
@@ -89,6 +95,7 @@ public final class Environment {
                 ", \n\tpluginsDir = " + pluginsDir +
                 ", \n\tlogsDir = " + logsDir +
                 ", \n\tnativePrefix = " + nativePrefix +
+                ", \n\tdisabledPluginSuffix = " + disabledPluginSuffix +
                 "\n}";
     }
 }

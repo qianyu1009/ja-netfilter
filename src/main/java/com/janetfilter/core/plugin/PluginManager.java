@@ -68,6 +68,11 @@ public final class PluginManager {
         @Override
         public void run() {
             try {
+                if (pluginFile.getName().endsWith(environment.getDisabledPluginSuffix())) {
+                    DebugInfo.debug("Disabled plugin: " + pluginFile + ", ignored.");
+                    return;
+                }
+
                 JarFile jarFile = new JarFile(pluginFile);
                 Manifest manifest = jarFile.getManifest();
                 String entryClass = manifest.getMainAttributes().getValue(ENTRY_NAME);
