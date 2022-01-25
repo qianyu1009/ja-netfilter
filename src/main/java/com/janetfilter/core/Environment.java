@@ -16,12 +16,13 @@ public final class Environment {
     private final File logsDir;
     private final String nativePrefix;
     private final String disabledPluginSuffix;
+    private final boolean attachMode;
 
-    public Environment(File agentFile) {
-        this(agentFile, null);
+    public Environment(File agentFile, boolean attachMode) {
+        this(agentFile, null, attachMode);
     }
 
-    public Environment(File agentFile, String app) {
+    public Environment(File agentFile, String app, boolean attachMode) {
         this.agentFile = agentFile;
         baseDir = agentFile.getParentFile();
 
@@ -41,6 +42,7 @@ public final class Environment {
         version = Launcher.VERSION;
         nativePrefix = StringUtils.randomMethodName(15) + "_";
         disabledPluginSuffix = ".disabled.jar";
+        this.attachMode = attachMode;
     }
 
     public String getPid() {
@@ -83,6 +85,14 @@ public final class Environment {
         return disabledPluginSuffix;
     }
 
+    public boolean isAttachMode() {
+        return attachMode;
+    }
+
+    public boolean isJavaagentMode() {
+        return !attachMode;
+    }
+
     @Override
     public String toString() {
         return "Environment: {" +
@@ -96,6 +106,7 @@ public final class Environment {
                 ", \n\tlogsDir = " + logsDir +
                 ", \n\tnativePrefix = " + nativePrefix +
                 ", \n\tdisabledPluginSuffix = " + disabledPluginSuffix +
+                ", \n\tattachMode = " + attachMode +
                 "\n}";
     }
 }

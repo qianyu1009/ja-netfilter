@@ -1,4 +1,4 @@
-# ja-netfilter v2.2.2
+# ja-netfilter v2.2.3
 
 ### A javaagent framework
 

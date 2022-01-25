@@ -9,11 +9,26 @@ import java.security.ProtectionDomain;
 import java.util.*;
 
 public final class Dispatcher implements ClassFileTransformer {
+    private final Environment environment;
     private final Set<String> classSet = new TreeSet<>();
     private final Map<String, List<MyTransformer>> transformerMap = new HashMap<>();
     private final List<MyTransformer> globalTransformers = new ArrayList<>();
 
+    public Dispatcher(Environment environment) {
+        this.environment = environment;
+    }
+
     public synchronized void addTransformer(MyTransformer transformer) {
+        if (environment.isAttachMode() && !transformer.attachMode()) {
+            DebugInfo.debug("Transformer: " + transformer.getClass().getName() + " is set to not load in attach mode, ignored.");
+            return;
+        }
+
+        if (environment.isJavaagentMode() && !transformer.javaagentMode()) {
+            DebugInfo.debug("Transformer: " + transformer.getClass().getName() + " is set to not load in -javaagent mode, ignored.");
+            return;
+        }
+
         String className = transformer.getHookClassName();
         if (null == className) {
             globalTransformers.add(transformer);

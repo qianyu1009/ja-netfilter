@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 
 public class Launcher {
     public static final String ATTACH_ARG = "--attach";
-    public static final String VERSION = "v2.2.2";
+    public static final String VERSION = "v2.2.3";
 
     private static boolean loaded = false;
 
@@ -42,6 +42,18 @@ public class Launcher {
     }
 
     public static void premain(String args, Instrumentation inst) {
+        premain(args, inst, false);
+    }
+
+    public static void agentmain(String args, Instrumentation inst) {
+        if (null == System.getProperty("janf.debug")) {
+            System.setProperty("janf.debug", "1");
+        }
+
+        premain(args, inst, true);
+    }
+
+    private static void premain(String args, Instrumentation inst, boolean attachMode) {
         if (loaded) {
             DebugInfo.warn("You have multiple `ja-netfilter` as javaagent.");
             return;
@@ -66,11 +78,7 @@ public class Launcher {
             return;
         }
 
-        Initializer.init(inst, new Environment(agentFile, args)); // for some custom UrlLoaders
-    }
-
-    public static void agentmain(String args, Instrumentation inst) {
-        premain(args, inst);
+        Initializer.init(inst, new Environment(agentFile, args, attachMode)); // for some custom UrlLoaders
     }
 
     private static void printUsage() {

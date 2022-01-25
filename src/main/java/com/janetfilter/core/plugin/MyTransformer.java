@@ -7,6 +7,20 @@ public interface MyTransformer {
     String getHookClassName();
 
     /**
+     * whether to load in attach mode
+     */
+    default boolean attachMode() {
+        return true;
+    }
+
+    /**
+     * whether to load in -javaagent mode
+     */
+    default boolean javaagentMode() {
+        return true;
+    }
+
+    /**
      * for global transformers only
      */
     default void before(String className, byte[] classBytes) throws Exception {

@@ -11,7 +11,7 @@ public class Initializer {
         DebugInfo.useFile(environment.getLogsDir());
         DebugInfo.info(environment.toString());
 
-        Dispatcher dispatcher = new Dispatcher();
+        Dispatcher dispatcher = new Dispatcher(environment);
         new PluginManager(inst, dispatcher, environment).loadPlugins();
 
         inst.addTransformer(dispatcher, true);
