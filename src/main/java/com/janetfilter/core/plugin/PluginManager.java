@@ -22,8 +22,8 @@ public final class PluginManager {
     private final Dispatcher dispatcher;
     private final Environment environment;
 
-    public PluginManager(Instrumentation inst, Dispatcher dispatcher, Environment environment) {
-        this.inst = inst;
+    public PluginManager(Dispatcher dispatcher, Environment environment) {
+        this.inst = environment.getInstrumentation();
         this.dispatcher = dispatcher;
         this.environment = environment;
     }

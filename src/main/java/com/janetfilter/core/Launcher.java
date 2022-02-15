@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 
 public class Launcher {
     public static final String ATTACH_ARG = "--attach";
-    public static final String VERSION = "v2.2.3";
+    public static final String VERSION = "v2.3.0";
 
     private static boolean loaded = false;
 
@@ -78,7 +78,7 @@ public class Launcher {
             return;
         }
 
-        Initializer.init(inst, new Environment(agentFile, args, attachMode)); // for some custom UrlLoaders
+        Initializer.init(new Environment(inst, agentFile, args, attachMode)); // for some custom UrlLoaders
     }
 
     private static void printUsage() {

@@ -7,13 +7,14 @@ import java.lang.instrument.Instrumentation;
 import java.util.Set;
 
 public class Initializer {
-    public static void init(Instrumentation inst, Environment environment) {
+    public static void init(Environment environment) {
         DebugInfo.useFile(environment.getLogsDir());
         DebugInfo.info(environment.toString());
 
         Dispatcher dispatcher = new Dispatcher(environment);
-        new PluginManager(inst, dispatcher, environment).loadPlugins();
+        new PluginManager(dispatcher, environment).loadPlugins();
 
+        Instrumentation inst = environment.getInstrumentation();
         inst.addTransformer(dispatcher, true);
         inst.setNativeMethodPrefix(dispatcher, environment.getNativePrefix());
 

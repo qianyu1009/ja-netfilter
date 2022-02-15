@@ -13,12 +13,17 @@ public final class Dispatcher implements ClassFileTransformer {
     private final Set<String> classSet = new TreeSet<>();
     private final Map<String, List<MyTransformer>> transformerMap = new HashMap<>();
     private final List<MyTransformer> globalTransformers = new ArrayList<>();
+    private final List<MyTransformer> manageTransformers = new ArrayList<>();
 
     public Dispatcher(Environment environment) {
         this.environment = environment;
     }
 
-    public synchronized void addTransformer(MyTransformer transformer) {
+    public void addTransformer(MyTransformer transformer) {
+        if (null == transformer) {
+            return;
+        }
+
         if (environment.isAttachMode() && !transformer.attachMode()) {
             DebugInfo.debug("Transformer: " + transformer.getClass().getName() + " is set to not load in attach mode, ignored.");
             return;
@@ -29,16 +34,23 @@ public final class Dispatcher implements ClassFileTransformer {
             return;
         }
 
-        String className = transformer.getHookClassName();
-        if (null == className) {
-            globalTransformers.add(transformer);
-            return;
+        synchronized (this) {
+            String className = transformer.getHookClassName();
+            if (null == className) {
+                globalTransformers.add(transformer);
+
+                if (transformer.isManager()) {
+                    manageTransformers.add(transformer);
+                }
+
+                return;
+            }
+
+            classSet.add(className.replace('/', '.'));
+            List<MyTransformer> transformers = transformerMap.computeIfAbsent(className, k -> new ArrayList<>());
+
+            transformers.add(transformer);
         }
-
-        classSet.add(className.replace('/', '.'));
-        List<MyTransformer> transformers = transformerMap.computeIfAbsent(className, k -> new ArrayList<>());
-
-        transformers.add(transformer);
     }
 
     public void addTransformers(List<MyTransformer> transformers) {
@@ -64,42 +76,40 @@ public final class Dispatcher implements ClassFileTransformer {
     }
 
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classFileBuffer) throws IllegalClassFormatException {
-        do {
-            if (null == className) {
-                break;
+        if (null == className) {
+            return classFileBuffer;
+        }
+
+        List<MyTransformer> transformers = transformerMap.get(className);
+        List<MyTransformer> globalTransformers = null == transformers ? this.manageTransformers : this.globalTransformers;
+
+        int order = 0;
+
+        try {
+            for (MyTransformer transformer : globalTransformers) {
+                transformer.before(className, classFileBuffer);
             }
 
-            List<MyTransformer> transformers = transformerMap.get(className);
-            if (null == transformers) {
-                break;
+            for (MyTransformer transformer : globalTransformers) {
+                classFileBuffer = transformer.preTransform(className, classFileBuffer, order++);
             }
 
-            int order = 0;
-
-            try {
-                for (MyTransformer transformer : globalTransformers) {
-                    transformer.before(className, classFileBuffer);
-                }
-
-                for (MyTransformer transformer : globalTransformers) {
-                    classFileBuffer = transformer.preTransform(className, classFileBuffer, order++);
-                }
-
+            if (null != transformers) {
                 for (MyTransformer transformer : transformers) {
                     classFileBuffer = transformer.transform(className, classFileBuffer, order++);
                 }
-
-                for (MyTransformer transformer : globalTransformers) {
-                    classFileBuffer = transformer.postTransform(className, classFileBuffer, order++);
-                }
-
-                for (MyTransformer transformer : globalTransformers) {
-                    transformer.after(className, classFileBuffer);
-                }
-            } catch (Throwable e) {
-                DebugInfo.error("Transform class failed: " + className, e);
             }
-        } while (false);
+
+            for (MyTransformer transformer : globalTransformers) {
+                classFileBuffer = transformer.postTransform(className, classFileBuffer, order++);
+            }
+
+            for (MyTransformer transformer : globalTransformers) {
+                transformer.after(className, classFileBuffer);
+            }
+        } catch (Throwable e) {
+            DebugInfo.error("Transform class failed: " + className, e);
+        }
 
         return classFileBuffer;
     }

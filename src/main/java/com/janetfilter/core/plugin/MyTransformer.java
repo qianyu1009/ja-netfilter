@@ -22,6 +22,16 @@ public interface MyTransformer {
 
     /**
      * for global transformers only
+     * whether it is a management transformer
+     *
+     * @return return true to handle the transform of all classes
+     */
+    default boolean isManager() {
+        return false;
+    }
+
+    /**
+     * for global transformers only
      */
     default void before(String className, byte[] classBytes) throws Exception {
 

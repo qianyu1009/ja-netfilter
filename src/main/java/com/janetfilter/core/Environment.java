@@ -4,6 +4,7 @@ import com.janetfilter.core.utils.ProcessUtils;
 import com.janetfilter.core.utils.StringUtils;
 
 import java.io.File;
+import java.lang.instrument.Instrumentation;
 
 public final class Environment {
     private final String pid;
@@ -18,11 +19,14 @@ public final class Environment {
     private final String disabledPluginSuffix;
     private final boolean attachMode;
 
-    public Environment(File agentFile, boolean attachMode) {
-        this(agentFile, null, attachMode);
+    private final Instrumentation instrumentation;
+
+    public Environment(Instrumentation instrumentation, File agentFile, boolean attachMode) {
+        this(instrumentation, agentFile, null, attachMode);
     }
 
-    public Environment(File agentFile, String app, boolean attachMode) {
+    public Environment(Instrumentation instrumentation, File agentFile, String app, boolean attachMode) {
+        this.instrumentation = instrumentation;
         this.agentFile = agentFile;
         baseDir = agentFile.getParentFile();
 
@@ -91,6 +95,10 @@ public final class Environment {
 
     public boolean isJavaagentMode() {
         return !attachMode;
+    }
+
+    public Instrumentation getInstrumentation() {
+        return instrumentation;
     }
 
     @Override
