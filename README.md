@@ -1,4 +1,4 @@
-# ja-netfilter v2.3.0
+# ja-netfilter v2.3.1
 
 ### A javaagent framework
 
@@ -50,6 +50,13 @@ EQUAL,somedomain
 * add environment variable `JANF_DEBUG=1` (log level) and start to enable it
 * or add system property `-Djanf.debug=1` (log level) to enable it
 * log level: `NONE=0`, `DEBUG=1`, `INFO=2`, `WARN=3`, `ERROR=4`
+
+## Debug output
+
+* the `ja-netfilter` will output debugging information to the `console` by default
+* add environment variable `JANF_OUTPUT=value` and start to change output medium
+* or add system property `-Djanf.output=value` to change output medium
+* output medium value: [`NONE=0`, `CONSOLE=1`, `FILE=2`, `CONSOLE+FILE=3`]
 
 ## Plugin system
 

@@ -25,4 +25,16 @@ public class StringUtils {
 
         return new String(buffer);
     }
+
+    public static Long toLong(String val) {
+        if (null == val) {
+            return null;
+        }
+
+        try {
+            return Long.parseLong(val);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

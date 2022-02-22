@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 
 public class Launcher {
     public static final String ATTACH_ARG = "--attach";
-    public static final String VERSION = "v2.3.0";
+    public static final String VERSION = "v2.3.1";
 
     private static boolean loaded = false;
 
@@ -48,6 +48,10 @@ public class Launcher {
     public static void agentmain(String args, Instrumentation inst) {
         if (null == System.getProperty("janf.debug")) {
             System.setProperty("janf.debug", "1");
+        }
+
+        if (null == System.getProperty("janf.output")) {
+            System.setProperty("janf.output", "3");
         }
 
         premain(args, inst, true);

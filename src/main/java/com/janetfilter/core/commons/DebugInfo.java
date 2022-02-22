@@ -2,28 +2,42 @@ package com.janetfilter.core.commons;
 
 import com.janetfilter.core.utils.DateUtils;
 import com.janetfilter.core.utils.ProcessUtils;
+import com.janetfilter.core.utils.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DebugInfo {
-    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final long OUTPUT_CONSOLE = 0x1L;
+    private static final long OUTPUT_FILE = 0x2L;
+
+    private static final ExecutorService CONSOLE_EXECUTOR = Executors.newSingleThreadExecutor();
+    private static final ExecutorService FILE_EXECUTOR = Executors.newSingleThreadExecutor();
     private static final String CLASS_NAME = DebugInfo.class.getName();
-    private static final String LOG_TEMPLATE = "%s %-5s [%s] %s-%d : %s%n";
+    private static final String LOG_TEMPLATE = "%s %-5s [%s@%-5s] %s-%d : %s%n";
+    private static final String PID = ProcessUtils.currentId();
     private static final Level LOG_LEVEL;
-    private static File logFile;
+    private static final Long LOG_OUTPUT;
+
+    private static File logDir;
 
     static {
         Level level = Level.of(System.getProperty("janf.debug"));
         LOG_LEVEL = Level.NONE == level ? Level.of(System.getenv("JANF_DEBUG")) : level;
+
+        Long output = StringUtils.toLong(System.getProperty("janf.output"));
+        if (null == output) {
+            output = StringUtils.toLong(System.getenv("JANF_OUTPUT"));
+        }
+        LOG_OUTPUT = null == output ? OUTPUT_CONSOLE : output;
     }
 
     public static void useFile(File dir) {
-        if (LOG_LEVEL == Level.NONE || null == dir) {
+        if (Level.NONE == LOG_LEVEL || 0 == (LOG_OUTPUT & OUTPUT_FILE) || null == dir) {
             return;
         }
 
@@ -42,13 +56,7 @@ public class DebugInfo {
             return;
         }
 
-        File file = new File(dir, String.format("%s-%s.log", DateUtils.formatDate(), ProcessUtils.currentId()));
-        if (file.exists()) {
-            error("Log file exists: " + file);
-            return;
-        }
-
-        logFile = file;
+        logDir = dir;
     }
 
     public static void debug(String content, Throwable e) {
@@ -96,40 +104,12 @@ public class DebugInfo {
             return;
         }
 
-        EXECUTOR.execute(new WriteTask(level, content, e));
-    }
-
-    private static void writeContent(String content) {
-        writeContent(content, System.out);
-    }
-
-    private static void writeContent(String content, PrintStream fallback) {
-        if (null == logFile) {
-            fallback.print(content);
-            return;
+        if (0 != (LOG_OUTPUT & OUTPUT_CONSOLE)) {
+            CONSOLE_EXECUTOR.execute(new ConsoleWriteTask(PID, level, content, e));
         }
 
-        try (PrintStream ps = new PrintStream(new FileOutputStream(logFile, true))) {
-            ps.print(content);
-        } catch (IOException e) {
-            fallback.println(content);
-        }
-    }
-
-    private static void writeException(Throwable e) {
-        writeException(e, System.err);
-    }
-
-    private static void writeException(Throwable e, PrintStream fallback) {
-        if (null == logFile) {
-            e.printStackTrace(fallback);
-            return;
-        }
-
-        try (PrintStream ps = new PrintStream(new FileOutputStream(logFile, true))) {
-            e.printStackTrace(ps);
-        } catch (IOException ex) {
-            e.printStackTrace(fallback);
+        if (null != logDir) {
+            FILE_EXECUTOR.execute(new FileWriteTask(logDir, PID, level, content, e));
         }
     }
 
@@ -158,20 +138,59 @@ public class DebugInfo {
         }
     }
 
-    private static class WriteTask implements Runnable {
+    private static class ConsoleWriteTask implements Runnable {
+        private final String pid;
         private final Level level;
         private final String content;
         private final Throwable exception;
         private final Throwable stackException;
-
         private final String threadName;
 
-        WriteTask(Level level, String content, Throwable exception) {
+        private PrintStream ps;
+
+        ConsoleWriteTask(String pid, Level level, String content, Throwable exception) {
+            this.pid = pid;
             this.level = level;
             this.content = content;
             this.exception = exception;
             this.stackException = new Throwable();
             this.threadName = Thread.currentThread().getName();
+
+            setPrintStream(null == exception ? System.out : System.err);
+        }
+
+        protected static void writeContent(String content, PrintStream ps) {
+            if (null == ps) {
+                return;
+            }
+
+            ps.print(content);
+        }
+
+        protected static void writeException(String content, Throwable e, PrintStream ps) {
+            if (null == ps) {
+                return;
+            }
+
+            ps.print(content);
+            e.printStackTrace(ps);
+        }
+
+        protected static void write(String content, Throwable e, PrintStream stream) {
+            if (null == e) {
+                writeContent(content, stream);
+                return;
+            }
+
+            writeException(content, e, stream);
+        }
+
+        protected PrintStream getPrintStream() {
+            return ps;
+        }
+
+        protected void setPrintStream(PrintStream ps) {
+            this.ps = ps;
         }
 
         @Override
@@ -188,15 +207,30 @@ public class DebugInfo {
                 }
             }
 
-            String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTimeMicro(), level, threadName, caller, line, content);
-            if (null == exception) {
-                writeContent(outContent);
-                return;
-            }
+            String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTimeMicro(), level, threadName, pid, caller, line, content);
+            write(outContent, exception, getPrintStream());
+        }
+    }
 
-            synchronized (DebugInfo.class) {
-                writeContent(outContent, System.err);
-                writeException(exception);
+    private static class FileWriteTask extends ConsoleWriteTask {
+        private final File logDir;
+
+        FileWriteTask(File logDir, String pid, Level level, String content, Throwable exception) {
+            super(pid, level, content, exception);
+
+            this.logDir = logDir;
+        }
+
+        @Override
+        public void run() {
+            File logFile = new File(logDir, String.format("%s.log", DateUtils.formatDate()));
+
+            try (PrintStream ps = new PrintStream(new FileOutputStream(logFile, true))) {
+                setPrintStream(ps);
+
+                super.run();
+            } catch (FileNotFoundException e) {
+                writeException("log file not found!", e, System.err);
             }
         }
     }

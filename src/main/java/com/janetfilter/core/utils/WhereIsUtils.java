@@ -55,7 +55,7 @@ public class WhereIsUtils {
             return url.toURI();
         }
 
-        String resourcePath = "/288daf08f4ba46dfde71b7f0624b0ad7f234a67a.txt";
+        String resourcePath = "/6c81ec87e55d331c267262e892427a3d93d76683.txt";
         url = Launcher.class.getResource(resourcePath);
         if (null == url) {
             throw new Exception("Can not locate resource file.");
