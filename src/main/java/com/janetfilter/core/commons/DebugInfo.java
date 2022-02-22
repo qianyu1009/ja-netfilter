@@ -8,12 +8,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DebugInfo {
     private static final long OUTPUT_CONSOLE = 0x1L;
     private static final long OUTPUT_FILE = 0x2L;
+    private static final long OUTPUT_WITH_PID = 0x4L;
 
     private static final ExecutorService CONSOLE_EXECUTOR = Executors.newSingleThreadExecutor();
     private static final ExecutorService FILE_EXECUTOR = Executors.newSingleThreadExecutor();
@@ -145,6 +147,7 @@ public class DebugInfo {
         private final Throwable exception;
         private final Throwable stackException;
         private final String threadName;
+        private final Date dateTime;
 
         private PrintStream ps;
 
@@ -155,6 +158,7 @@ public class DebugInfo {
             this.exception = exception;
             this.stackException = new Throwable();
             this.threadName = Thread.currentThread().getName();
+            this.dateTime = new Date();
 
             setPrintStream(null == exception ? System.out : System.err);
         }
@@ -193,6 +197,14 @@ public class DebugInfo {
             this.ps = ps;
         }
 
+        protected String getPID() {
+            return pid;
+        }
+
+        public Date getDateTime() {
+            return dateTime;
+        }
+
         @Override
         public void run() {
             int line = 0;
@@ -207,7 +219,7 @@ public class DebugInfo {
                 }
             }
 
-            String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTimeMicro(), level, threadName, pid, caller, line, content);
+            String outContent = String.format(LOG_TEMPLATE, DateUtils.formatDateTimeMicro(dateTime), level, threadName, pid, caller, line, content);
             write(outContent, exception, getPrintStream());
         }
     }
@@ -223,9 +235,9 @@ public class DebugInfo {
 
         @Override
         public void run() {
-            File logFile = new File(logDir, String.format("%s.log", DateUtils.formatDate()));
+            String fileName = String.format("%s%s.log", DateUtils.formatDate(getDateTime()), 0 != (LOG_OUTPUT & OUTPUT_WITH_PID) ? "-" + getPID() : "");
 
-            try (PrintStream ps = new PrintStream(new FileOutputStream(logFile, true))) {
+            try (PrintStream ps = new PrintStream(new FileOutputStream(new File(logDir, fileName), true))) {
                 setPrintStream(ps);
 
                 super.run();
