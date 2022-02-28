@@ -13,9 +13,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DebugInfo {
-    private static final long OUTPUT_CONSOLE = 0x1L;
-    private static final long OUTPUT_FILE = 0x2L;
-    private static final long OUTPUT_WITH_PID = 0x4L;
+    public static final long OUTPUT_CONSOLE = 0x1L;
+    public static final long OUTPUT_FILE = 0x2L;
+    public static final long OUTPUT_WITH_PID = 0x4L;
 
     private static final ExecutorService CONSOLE_EXECUTOR = Executors.newSingleThreadExecutor();
     private static final ExecutorService FILE_EXECUTOR = Executors.newSingleThreadExecutor();
@@ -59,6 +59,14 @@ public class DebugInfo {
         }
 
         logDir = dir;
+    }
+
+    public static Level getLogLevel() {
+        return LOG_LEVEL;
+    }
+
+    public static long getLogOutput() {
+        return LOG_OUTPUT;
     }
 
     public static void debug(String content, Throwable e) {
@@ -115,7 +123,7 @@ public class DebugInfo {
         }
     }
 
-    private enum Level {
+    public enum Level {
         NONE, DEBUG, INFO, WARN, ERROR;
 
         public static Level of(String valueStr) {

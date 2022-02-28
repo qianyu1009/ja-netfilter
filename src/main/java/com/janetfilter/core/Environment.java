@@ -9,6 +9,7 @@ import java.lang.instrument.Instrumentation;
 public final class Environment {
     private final String pid;
     private final String version;
+    private final int versionNumber;
     private final String appName;
     private final File baseDir;
     private final File agentFile;
@@ -44,6 +45,7 @@ public final class Environment {
 
         pid = ProcessUtils.currentId();
         version = Launcher.VERSION;
+        versionNumber = Launcher.VERSION_NUMBER;
         nativePrefix = StringUtils.randomMethodName(15) + "_";
         disabledPluginSuffix = ".disabled.jar";
         this.attachMode = attachMode;
@@ -55,6 +57,10 @@ public final class Environment {
 
     public String getVersion() {
         return version;
+    }
+
+    public int getVersionNumber() {
+        return versionNumber;
     }
 
     public String getAppName() {
@@ -106,6 +112,7 @@ public final class Environment {
         return "Environment: {" +
                 "\n\tpid = " + pid +
                 ", \n\tversion = " + version +
+                ", \n\tversionNumber = " + versionNumber +
                 ", \n\tappName = " + appName +
                 ", \n\tbaseDir = " + baseDir +
                 ", \n\tagentFile = " + agentFile +

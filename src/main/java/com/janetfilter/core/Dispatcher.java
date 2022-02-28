@@ -87,25 +87,25 @@ public final class Dispatcher implements ClassFileTransformer {
 
         try {
             for (MyTransformer transformer : globalTransformers) {
-                transformer.before(className, classFileBuffer);
+                transformer.before(loader, classBeingRedefined, protectionDomain, className, classFileBuffer);
             }
 
             for (MyTransformer transformer : globalTransformers) {
-                classFileBuffer = transformer.preTransform(className, classFileBuffer, order++);
+                classFileBuffer = transformer.preTransform(loader, classBeingRedefined, protectionDomain, className, classFileBuffer, order++);
             }
 
             if (null != transformers) {
                 for (MyTransformer transformer : transformers) {
-                    classFileBuffer = transformer.transform(className, classFileBuffer, order++);
+                    classFileBuffer = transformer.transform(loader, classBeingRedefined, protectionDomain, className, classFileBuffer, order++);
                 }
             }
 
             for (MyTransformer transformer : globalTransformers) {
-                classFileBuffer = transformer.postTransform(className, classFileBuffer, order++);
+                classFileBuffer = transformer.postTransform(loader, classBeingRedefined, protectionDomain, className, classFileBuffer, order++);
             }
 
             for (MyTransformer transformer : globalTransformers) {
-                transformer.after(className, classFileBuffer);
+                transformer.after(loader, classBeingRedefined, protectionDomain, className, classFileBuffer);
             }
         } catch (Throwable e) {
             DebugInfo.error("Transform class failed: " + className, e);
