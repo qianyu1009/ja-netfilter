@@ -26,6 +26,7 @@ public class Initializer {
             }
 
             try {
+                c.getGenericSuperclass();
                 inst.retransformClasses(c);
             } catch (Throwable e) {
                 DebugInfo.error("Retransform class failed: " + name, e);

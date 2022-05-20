@@ -1,4 +1,4 @@
-# ja-netfilter 2022.1.0
+# ja-netfilter 2022.2.0
 
 ### A javaagent framework
 
@@ -10,6 +10,12 @@
     * some apps support the `JVM Options file`, you can add as a line of the `JVM Options file`.
     * **WARNING: DO NOT put some unnecessary whitespace characters!**
 * or execute `java -jar /path/to/ja-netfilter.jar` to use `attach mode`.
+* for **Java 17** you have to add at least these `JVM Options`:
+
+  ```
+  --add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED
+  --add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED
+  ```
 
 * edit your plugin config files: `${lower plugin name}.conf` file in the `config` dir where `ja-netfilter.jar` is located.
 * the `config`, `logs` and `plugins` directories can be specified through **the javaagent args**.
